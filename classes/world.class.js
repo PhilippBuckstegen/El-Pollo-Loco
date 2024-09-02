@@ -27,13 +27,11 @@ class World {
         this.addObjectsToMap(this.level.enemies);
         this.ctx.translate(-this.camera_x, 0);
 
-
         let self = this;
         requestAnimationFrame(function () {
             self.draw();
         
         });
-
     }
 
     addObjectsToMap(objects) {
@@ -42,7 +40,6 @@ class World {
         });
     }
 
-    
     addToMap(mo) {
         if (mo.otherDirection) {
             this.ctx.save();
