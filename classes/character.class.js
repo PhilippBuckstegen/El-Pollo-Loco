@@ -66,8 +66,8 @@ class Character extends MovableObject {
 
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
-                this.walking_sounds.play();
                 this.otherDirection = true;
+                this.walking_sounds.play();
             }
 
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
@@ -91,7 +91,7 @@ class Character extends MovableObject {
                     this.playAnimation(this.IMAGES_WALKING);
                 }
             }
-        }, 40);
+        }, 50);
     }
     
 }
