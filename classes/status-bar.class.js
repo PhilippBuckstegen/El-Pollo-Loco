@@ -1,5 +1,5 @@
 class StatusBar extends DrawableObject {
-    percentage = 100;  // Standardwert für eine Statusbar, die bei 100% startet
+    percentage = 100;
 
     constructor(x, y, width, height, images, startsAtZero = false) {
         super();
@@ -9,12 +9,12 @@ class StatusBar extends DrawableObject {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.percentage = startsAtZero ? 0 : 100; // Setzt den Startwert
+        this.percentage = startsAtZero ? 0 : 100;
         this.updateImage();
     }
 
     setPercentage(percentage) {
-        this.percentage = Math.max(0, Math.min(percentage, 100)); // Sicherstellen, dass percentage zwischen 0 und 100 bleibt
+        this.percentage = Math.max(0, Math.min(percentage, 100));
         this.updateImage();
     }
 

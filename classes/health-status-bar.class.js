@@ -13,7 +13,7 @@ class HealthStatusBar extends StatusBar {
                 'img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png',
                 'img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png'
             ],
-            false  // Health-Bar startet bei 100%
+            false
         );
     }
 }

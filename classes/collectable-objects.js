@@ -5,7 +5,7 @@ class CollectableObject extends DrawableObject {
         this.loadImage(imagePath);
         this.width = width;
         this.height = height;
-        this.setRandomPosition(); // Position setzen
+        this.setRandomPosition();
     }
 
     setRandomPosition() {

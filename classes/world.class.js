@@ -53,11 +53,11 @@ class World {
         this.collectables.forEach((collectable, index) => {
             if (this.character.isColliding(collectable)) {
                 if (collectable instanceof CollectableBottle) {
-                    this.character.collectBottle(collectable); // Übergibt das Objekt an den Charakter
-                    this.collectables.splice(index, 1); // Entfernt das gesammelte Objekt
+                    this.character.collectBottle(collectable);
+                    this.collectables.splice(index, 1);
                 } else if (collectable instanceof CollectableCoin) {
-                    this.character.collectCoin(collectable); // Übergibt das Objekt an den Charakter
-                    this.collectables.splice(index, 1); // Entfernt das gesammelte Objekt
+                    this.character.collectCoin(collectable);
+                    this.collectables.splice(index, 1);
                 }
             }
         });
@@ -96,7 +96,7 @@ class World {
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
-        this.addObjectsToMap(this.collectables); // Zeichnen der Collectables
+        this.addObjectsToMap(this.collectables);
         this.ctx.translate(-this.camera_x, 0);
 
         this.throwableObjects.forEach(throwable => throwable.update());

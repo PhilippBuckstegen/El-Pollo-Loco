@@ -31,51 +31,45 @@ class ThrowableObject extends MovableObject {
         this.isCollided = false;
         this.isSplash = false;
         this.interval = null;
-        this.imageChangeInterval = 0; // Hilfsvariable für den Bildwechsel
+        this.imageChangeInterval = 0;
 
         this.throw();
     }
 
     throw() {
-        this.applyGravity(); // Schwerkraft wird angewendet
-
+        this.applyGravity();
         this.interval = setInterval(() => {
             if (!this.isCollided) {
-                // Bogenbewegung
                 this.x += this.speedX;
                 this.y -= this.speedY;
-                this.speedY -= 0.5; // verringert die Geschwindigkeit in der Y-Achse für den Bogen
-
-                // Bildwechsel für Rotation
+                this.speedY -= 0.5;
                 this.imageChangeInterval++;
-                if (!this.isSplash && this.imageChangeInterval % 2 === 0) { // Alle 5 Intervalle wechseln
+                if (!this.isSplash && this.imageChangeInterval % 2 === 0) {
                     this.playAnimation(this.imagesFlying);
                 }
 
-                // Stoppen, wenn das Objekt den Boden erreicht
                 if (this.y >= 440 - this.height) {
-                    this.y = 440 - this.height; // Positioniere die Flasche am Boden
-                    this.speedY = 0; // Stoppt die Vertikalbewegung
+                    this.y = 440 - this.height;
+                    this.speedY = 0;
                     this.speedX = 0; 
                     
-                    if (!this.isSplash) { // Nur, wenn noch nicht gesplashed
+                    if (!this.isSplash) {
                         this.isSplash = true;
-                        this.playSplashAnimation(); // Startet die Splash-Animation
+                        this.playSplashAnimation();
                     }
                 }
             } else {
-                // Wenn kollidiert, keine Bewegung mehr
                 clearInterval(this.interval);
                 if (!this.isSplash) {
                     this.isSplash = true;
-                    this.playSplashAnimation(); // Startet die Splash-Animation
+                    this.playSplashAnimation();
                 }
             }
-        }, 1000 / 25); // 25 FPS
+        }, 1000 / 25);
     }
 
     playAnimation(images) {
-        if (this.isSplash) return; // Kein Bildwechsel während der Splash-Animation
+        if (this.isSplash) return;
 
         this.loadImage(images[this.currentImage]);
         this.currentImage = (this.currentImage + 1) % images.length;
