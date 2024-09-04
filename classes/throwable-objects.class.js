@@ -1,19 +1,113 @@
 class ThrowableObject extends MovableObject {
 
+    imagesFlying = [
+        'img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
+        'img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png',
+        'img/6_salsa_bottle/bottle_rotation/3_bottle_rotation.png',
+        'img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.png'
+    ];
+
+    imagesSplash = [
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
+        'img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
+    ];
+
     constructor(x, y) {
-        super().loadImage('img/6_salsa_bottle/salsa_bottle.png');
+        super();
+        this.world = world;
+        this.loadImage(this.imagesFlying[0]);
         this.x = x;
         this.y = y;
         this.height = 60;
-        this.width = 50;
-        this.trow();
+        this.width = 60;
+        this.speedX = 20;
+        this.speedY = 20;
+        this.currentImage = 0;
+        this.currentSplashImage = 0;
+        this.isCollided = false;
+        this.isSplash = false;
+        this.interval = null;
+        this.imageChangeInterval = 0; // Hilfsvariable für den Bildwechsel
+
+        this.throw();
     }
 
-    trow() {
-        this.speedY = 30;
-        this.applyGravity();
-        setInterval(() => {
-            this.x += 10;
-        }, 25);
+    throw() {
+        this.applyGravity(); // Schwerkraft wird angewendet
+
+        this.interval = setInterval(() => {
+            if (!this.isCollided) {
+                // Bogenbewegung
+                this.x += this.speedX;
+                this.y -= this.speedY;
+                this.speedY -= 0.5; // verringert die Geschwindigkeit in der Y-Achse für den Bogen
+
+                // Bildwechsel für Rotation
+                this.imageChangeInterval++;
+                if (!this.isSplash && this.imageChangeInterval % 2 === 0) { // Alle 5 Intervalle wechseln
+                    this.playAnimation(this.imagesFlying);
+                }
+
+                // Stoppen, wenn das Objekt den Boden erreicht
+                if (this.y >= 440 - this.height) {
+                    this.y = 440 - this.height; // Positioniere die Flasche am Boden
+                    this.speedY = 0; // Stoppt die Vertikalbewegung
+                    this.speedX = 0; 
+                    
+                    if (!this.isSplash) { // Nur, wenn noch nicht gesplashed
+                        this.isSplash = true;
+                        this.playSplashAnimation(); // Startet die Splash-Animation
+                    }
+                }
+            } else {
+                // Wenn kollidiert, keine Bewegung mehr
+                clearInterval(this.interval);
+                if (!this.isSplash) {
+                    this.isSplash = true;
+                    this.playSplashAnimation(); // Startet die Splash-Animation
+                }
+            }
+        }, 1000 / 25); // 25 FPS
+    }
+
+    playAnimation(images) {
+        if (this.isSplash) return; // Kein Bildwechsel während der Splash-Animation
+
+        this.loadImage(images[this.currentImage]);
+        this.currentImage = (this.currentImage + 1) % images.length;
+    }
+
+    playSplashAnimation() {
+        if (!this.isSplash) return;
+
+        this.loadImage(this.imagesSplash[this.currentSplashImage]);
+        this.currentSplashImage = (this.currentSplashImage + 1) % this.imagesSplash.length;
+
+        if (this.currentSplashImage === 0) {
+            this.remove();
+        }
+    }
+
+    checkCollision(otherObject) {
+        if (this.isColliding(otherObject)) {
+            this.isCollided = true;
+        }
+    }
+
+    update() {
+        if (this.isSplash) {
+            this.playSplashAnimation();
+        }
+    }
+
+    remove() {
+        let index = this.world.throwableObjects.indexOf(this);
+        if (index > -1) {
+            this.world.throwableObjects.splice(index, 1);
+        }
     }
 }

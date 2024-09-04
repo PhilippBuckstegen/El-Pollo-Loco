@@ -5,16 +5,22 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    statusBar = new StatusBar();
+    healthStatusBar = new HealthStatusBar();
+    bottleStatusBar = new BottleStatusBar();
+    coinStatusBar = new CoinStatusBar();
+    endbossStatusBar = new EndbossStatusBar();
     throwableObjects = [];
-
+    collectables = [];
+    canvasWidth = 2200;
+    canvasHeight = 480;
+    
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
-        this.draw();
         this.setWorld();
-        this.checkCollisions();
+        this.addCollectables();
+        this.draw();
         this.run();
     }
 
@@ -40,8 +46,35 @@ class World {
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
-                this.statusBar.setPercentage(this.character.energy);
+                this.healthStatusBar.setPercentage(this.character.energy);
             }
+        });
+
+        this.collectables.forEach((collectable, index) => {
+            if (this.character.isColliding(collectable)) {
+                if (collectable instanceof CollectableBottle) {
+                    this.character.collectBottle(collectable); // Übergibt das Objekt an den Charakter
+                    this.collectables.splice(index, 1); // Entfernt das gesammelte Objekt
+                } else if (collectable instanceof CollectableCoin) {
+                    this.character.collectCoin(collectable); // Übergibt das Objekt an den Charakter
+                    this.collectables.splice(index, 1); // Entfernt das gesammelte Objekt
+                }
+            }
+        });
+    }
+
+    addCollectables() {
+        let numberOfBottles = 10; 
+        let numberOfCoins = 10; 
+
+        Array.from({ length: numberOfBottles }).forEach(() => {
+            let bottle = new CollectableBottle(this.canvas.width, this.canvas.height);
+            this.collectables.push(bottle);
+        });
+
+        Array.from({ length: numberOfCoins }).forEach(() => {
+            let coin = new CollectableCoin(this.canvas.width, this.canvas.height);
+            this.collectables.push(coin);
         });
     }
 
@@ -53,19 +86,24 @@ class World {
 
         this.ctx.translate(-this.camera_x, 0);
         // ------ Space for fixed objects ------
-        this.addToMap(this.statusBar);
+        this.addToMap(this.healthStatusBar);
+        this.addToMap(this.bottleStatusBar);
+        this.addToMap(this.coinStatusBar);
+        this.addToMap(this.endbossStatusBar);
         this.ctx.translate(this.camera_x, 0);
 
         this.addToMap(this.character);
         this.addObjectsToMap(this.level.clouds);
         this.addObjectsToMap(this.level.enemies);
         this.addObjectsToMap(this.throwableObjects);
+        this.addObjectsToMap(this.collectables); // Zeichnen der Collectables
         this.ctx.translate(-this.camera_x, 0);
+
+        this.throwableObjects.forEach(throwable => throwable.update());
 
         let self = this;
         requestAnimationFrame(function () {
             self.draw();
-        
         });
     }
 
@@ -81,12 +119,10 @@ class World {
         }
 
         mo.draw(this.ctx);
-       // mo.drawFrame(this.ctx);
 
         if (mo.otherDirection) {
             this.flipImageBack(mo);
         }
-
     }
 
     flipImage(mo) {

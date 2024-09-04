@@ -4,6 +4,9 @@ class Character extends MovableObject {
     height = 300;
     speed = 10;
     y = 135;
+    collectedBottles = []; // Array für gesammelte Flaschen
+    collectedCoins = [];
+
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
         'img/2_character_pepe/2_walk/W-22.png',
@@ -86,6 +89,9 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
+                this.walking_sounds.pause();
+
+
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.IMAGES_WALKING);
@@ -93,5 +99,14 @@ class Character extends MovableObject {
             }
         }, 50);
     }
-    
+
+    collectBottle(bottle) {
+        this.collectedBottles.push(bottle); // Füge die Flasche zum Array hinzu
+        this.world.bottleStatusBar.setPercentage(this.collectedBottles.length * 20); // Statusleiste aktualisieren
+    }
+
+    collectCoin(coin) {
+        this.collectedCoins.push(coin); // Füge die Münze zum Array hinzu
+        this.world.coinStatusBar.setPercentage(this.collectedCoins.length * 20); // Statusleiste aktualisieren
+    }
 }
