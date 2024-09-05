@@ -2,14 +2,15 @@ class Endboss extends MovableObject {
     height = 400;
     width = 300;
     y = 45;
-    speed = 4; // Geschwindigkeit des Endboss beim Bewegen
-    speedY = 0; // Geschwindigkeit in Y-Richtung
-    gravity = 1; // Schwerkraft
-    jumpPower = 20; // Stärke des Sprungs
-    isWalking = false;
+    speed = 4;
+    speedY = 0;
+    gravity = 1;
+    jumpPower = 20;
     direction = 'left';
+    isWalking = false;
     isAngry = false;
     isAttacking = false;
+    otherDirection = false;
 
     IMAGES_ANGRY = [
         'img/4_enemie_boss_chicken/2_alert/G5.png',
@@ -55,7 +56,7 @@ class Endboss extends MovableObject {
     constructor(world) {
         super().loadImage(this.IMAGES_ANGRY[0]);
         this.world = world;
-        this.x = 2650; // Der Endboss startet weit rechts auf der Karte
+        this.x = 2650;
         this.loadImages(this.IMAGES_ANGRY);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ATTACK);
@@ -65,36 +66,34 @@ class Endboss extends MovableObject {
     }
 
     animate() {
-        // Bewegung und Richtung wechseln
         setInterval(() => {
             if (this.isWalking) {
-                if (this.direction === 'left') {
-                    this.moveLeft();
-                    this.otherDirection = false;
-                } else {
-                    this.moveRight();
-                    this.otherDirection = true;
-                }
-
-                // Begrenzung der Bewegung auf die Spielfeldgrenzen
-                if (this.x <= 2000) this.direction = 'right';
-                if (this.x >= 2650) this.direction = 'left';
+                this.walkingMovement();
             }
 
-            // Schwerkraft anwenden
-            this.y += this.speedY;
-            if (this.y > 45) { // assuming 45 is ground level
-                this.y = 45;
-                this.speedY = 0;
-            } else {
-                this.speedY += this.gravity;
-            }
-        }, 1000 / 80); // 80 FPS
+            this.applyGravity();
 
-        // Zufällige Animation abspielen
+            if (this.y < 45) {
+                this.horizontalJumpMovement();
+            }
+        }, 1000 / 60);
+
         setInterval(() => {
             this.playRandomAnimation();
-        }, 1000); // Alle 1 Sekunde Animation wechseln
+        }, 1000);
+    }
+
+    walkingMovement() {
+        if (this.direction === 'left') {
+            this.moveLeft();
+            this.otherDirection = false;
+        } else {
+            this.moveRight();
+            this.otherDirection = true;
+        }
+
+        if (this.x <= 2000) this.direction = 'right';
+        if (this.x >= 2650) this.direction = 'left';
     }
 
     playRandomAnimation() {
@@ -112,9 +111,39 @@ class Endboss extends MovableObject {
         this.isAngry = selectedAnimation.state === 'angry';
         this.isAttacking = selectedAnimation.state === 'attacking';
 
-        // Springe, wenn der Boss angreift
         if (this.isAttacking) {
             this.jump();
+        }
+    }
+
+    horizontalJumpMovement() {
+        if (this.otherDirection) {
+            this.moveRight();
+        } else {
+            this.moveLeft();
+        }
+    }
+
+    playAnimation(images) {
+        let i = Math.floor(this.currentImage / 2) % images.length; 
+        let path = images[i];
+        this.img = this.imageCache[path];
+        this.currentImage++;
+    }
+
+    jump() {
+        if (this.y === 45) { 
+            this.speedY = -this.jumpPower; 
+        }
+    }
+
+    applyGravity() {
+        this.y += this.speedY;
+        if (this.y > 45) {
+            this.y = 45;
+            this.speedY = 0;
+        } else {
+            this.speedY += this.gravity;
         }
     }
 
@@ -124,10 +153,5 @@ class Endboss extends MovableObject {
 
     moveRight() {
         this.x += this.speed;
-    }
-
-    jump() {
-        this.y = 45; // Setze die y-Position auf den Boden
-        this.speedY = -this.jumpPower; // Höher springen
     }
 }
