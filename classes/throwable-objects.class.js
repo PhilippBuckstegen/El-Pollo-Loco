@@ -32,7 +32,6 @@ class ThrowableObject extends MovableObject {
         this.isSplash = false;
         this.interval = null;
         this.imageChangeInterval = 0;
-
         this.throw();
     }
 

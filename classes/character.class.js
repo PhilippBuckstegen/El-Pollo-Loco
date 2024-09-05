@@ -1,10 +1,9 @@
 class Character extends MovableObject {
-
     width = 120;
     height = 300;
     speed = 10;
     y = 135;
-    collectedBottles = []; // Array für gesammelte Flaschen
+    collectedBottles = [];
     collectedCoins = [];
 
     IMAGES_WALKING = [
@@ -46,9 +45,11 @@ class Character extends MovableObject {
 
     world;
     walking_sounds = new Audio('audio/running.mp3');
+    jumping_sounds = new Audio('audio/jump_voice.mp3');
 
-    constructor() {
+    constructor(world) {
         super().loadImage('img/2_character_pepe/1_idle/long_idle/I-13.png');
+        this.world = world;
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_DEAD);
@@ -58,7 +59,6 @@ class Character extends MovableObject {
     }
     
     animate() {
-
         setInterval(() => {
             this.walking_sounds.pause();
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -75,6 +75,7 @@ class Character extends MovableObject {
 
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
+                this.jumping_sounds.play();
             }
 
             this.world.camera_x = -this.x + 80;
@@ -82,16 +83,13 @@ class Character extends MovableObject {
         }, 1000 / 60);
 
         setInterval(() => {
-
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
-            } else if(this.isHurt()){
+            } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
                 this.walking_sounds.pause();
-
-
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.IMAGES_WALKING);
@@ -101,12 +99,12 @@ class Character extends MovableObject {
     }
 
     collectBottle(bottle) {
-        this.collectedBottles.push(bottle); // Füge die Flasche zum Array hinzu
-        this.world.bottleStatusBar.setPercentage(this.collectedBottles.length * 20); // Statusleiste aktualisieren
+        this.collectedBottles.push(bottle);
+        this.world.bottleStatusBar.setPercentage(this.collectedBottles.length * 20);
     }
 
     collectCoin(coin) {
-        this.collectedCoins.push(coin); // Füge die Münze zum Array hinzu
-        this.world.coinStatusBar.setPercentage(this.collectedCoins.length * 20); // Statusleiste aktualisieren
+        this.collectedCoins.push(coin);
+        this.world.coinStatusBar.setPercentage(this.collectedCoins.length * 20);
     }
 }

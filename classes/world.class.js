@@ -1,5 +1,6 @@
 class World {
-    character = new Character();
+    character;
+    endboss;
     level = level1;
     canvas;
     ctx;
@@ -18,6 +19,8 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.character = new Character(this);
+        this.endboss = new Endboss(this);
         this.setWorld();
         this.addCollectables();
         this.draw();
@@ -26,6 +29,7 @@ class World {
 
     setWorld() {
         this.character.world = this;
+        this.endboss.world = this;
     }
 
     run() {

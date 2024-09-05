@@ -1,6 +1,6 @@
 class CollectableCoin extends CollectableObject {
     constructor() {
-        super('img/8_coin/coin_1.png', 60, 60);
+        super('img/8_coin/coin_1.png', 80, 80);
 
         this.y = this.getRandomYPosition();
     }
