@@ -2,9 +2,9 @@ class CoinStatusBar extends StatusBar {
     constructor() {
         super(
             20,
-            100,
+            80,
             200,
-            60,
+            50,
             [
                 'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/0.png',
                 'img/7_statusbars/1_statusbar/1_statusbar_coin/blue/20.png',

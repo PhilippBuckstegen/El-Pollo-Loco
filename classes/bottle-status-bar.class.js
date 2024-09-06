@@ -2,9 +2,9 @@ class BottleStatusBar extends StatusBar {
     constructor() {
         super(
             20,
-            50,
+            40,
             200,
-            60,
+            50,
             [
                 'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png',
                 'img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/20.png',

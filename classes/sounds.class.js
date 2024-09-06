@@ -1,6 +1,9 @@
 class SoundManager {
     constructor() {
         this.sounds = {};
+        window.addEventListener('click', () => {
+            this.playSound('backgroundMusic', true);
+        });
     }
 
     /**
@@ -57,5 +60,6 @@ class SoundManager {
         for (let sound in this.sounds) {
             this.stopSound(sound);
         }
-    }
+    }    
 }
+

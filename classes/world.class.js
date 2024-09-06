@@ -19,12 +19,30 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.soundManager = new SoundManager();
         this.character = new Character(this);
         this.endboss = new Endboss(this);
+        this.initSounds();
         this.setWorld();
         this.addCollectables();
         this.draw();
         this.run();
+    }
+
+    initSounds () {
+        this.soundManager.loadSound('jump', 'audio/jump_voice.mp3');
+        this.soundManager.loadSound('chickenDead', 'audio/chicken_dead.mp3');
+        this.soundManager.loadSound('babyChickenDead', 'audio/baby-chicken_dead.mp3');
+        this.soundManager.loadSound('coin', 'audio/coin.mp3');
+        this.soundManager.loadSound('collectBottle', 'audio/bottle_collect.mp3');
+        this.soundManager.loadSound('backgroundMusic', 'audio/music/game-bg.mp3');
+        this.soundManager.loadSound('snoring', 'audio/sleep.mp3');
+        this.soundManager.loadSound('bottleBreak', 'audio/bottle_break.mp3');
+        this.soundManager.loadSound('throw', 'audio/throw.mp3');
+
+        this.soundManager.playSound('snoring', true); // true für Loop
+        this.soundManager.playSound('backgroundMusic', true); // true für Loop
+        this.soundManager.setVolume('backgroundMusic', 0.3);
     }
 
     setWorld() {
@@ -37,13 +55,16 @@ class World {
             this.jumpOnEnemy();
             this.checkCollisions();
             this.checkThrowObjects();
-        }, 200);
+        }, 300);
     }
 
     checkThrowObjects() {
-        if (this.keyboard.D) {
+        if (this.keyboard.D && this.character.collectedBottles.length > 0) {
             let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+            this.character.collectedBottles.pop();    
             this.throwableObjects.push(bottle);
+            bottle.throw();
+            this.character.world.bottleStatusBar.setPercentage(this.character.collectedBottles.length * 20);
         }
     }
 
@@ -54,9 +75,9 @@ class World {
                     enemy.defeat();
 
                     if (enemy instanceof BabyChicken) {
-                        //this.soundManager.playSound('babyChickenDead');
+                        this.soundManager.playSound('babyChickenDead');
                     } else if (enemy instanceof Chicken) {
-                        //this.soundManager.playSound('chickenDead');
+                        this.soundManager.playSound('chickenDead');
                     }
 
                     this.character.jump();
@@ -69,7 +90,7 @@ class World {
     }
 
     checkCollisions() {
-        // Kollisionserkennung für Level-Feinde
+
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy) && !enemy.isDead) {
                 this.character.hit();
@@ -77,20 +98,21 @@ class World {
             }
         });
 
-        // Kollisionserkennung für collectables
         this.collectables.forEach((collectable, index) => {
             if (this.character.isColliding(collectable)) {
                 if (collectable instanceof CollectableBottle) {
                     this.character.collectBottle(collectable);
+                    this.soundManager.playSound('collectBottle');
                     this.collectables.splice(index, 1);
                 } else if (collectable instanceof CollectableCoin) {
                     this.character.collectCoin(collectable);
+                    this.soundManager.playSound('coin');
                     this.collectables.splice(index, 1);
                 }
             }
         });
-    }
-    
+
+    }    
 
     addCollectables() {
         let numberOfBottles = 10;

@@ -24,8 +24,8 @@ class ThrowableObject extends MovableObject {
         this.y = y;
         this.height = 60;
         this.width = 60;
-        this.speedX = 20;
-        this.speedY = 20;
+        this.speedX = 18;
+        this.speedY = 22;
         this.currentImage = 0;
         this.currentSplashImage = 0;
         this.isCollided = false;
@@ -35,16 +35,17 @@ class ThrowableObject extends MovableObject {
         this.throw();
     }
 
-    throw() {
+    throw() { // wirft leider noch zu schnell!
         this.applyGravity();
         this.interval = setInterval(() => {
             if (!this.isCollided) {
                 this.x += this.speedX;
                 this.y -= this.speedY;
-                this.speedY -= 0.5;
+                //this.speedY -= 0;
                 this.imageChangeInterval++;
                 if (!this.isSplash && this.imageChangeInterval % 2 === 0) {
                     this.playAnimation(this.imagesFlying);
+                    this.world.soundManager.playSound('throw');
                 }
 
                 if (this.y >= 440 - this.height) {
@@ -55,6 +56,7 @@ class ThrowableObject extends MovableObject {
                     if (!this.isSplash) {
                         this.isSplash = true;
                         this.playSplashAnimation();
+                        this.world.soundManager.playSound('bottleBreak');
                     }
                 }
             } else {

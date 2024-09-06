@@ -22,13 +22,31 @@ class MovableObject extends DrawableObject {
             return this.y < 135;
         }
     }
+
+    /*
+    isColliding (obj) {
+        return  (this.x + this.width) >= obj.x && this.x <= (obj.x + obj.width) && 
+                (this.y + this.offsetY + this.height) >= obj.y &&
+                (this.y + this.offsetY) <= (obj.y + obj.height) && 
+                obj.onCollisionCourse;
+    }
+    */
     
+   /* 
     isColliding(mo) {
         return this.x + this.width > mo.x &&
             this.y + this.height > mo.y &&
             this.x < mo.x &&
             this.y < mo.y + mo.height;
     }
+    */
+
+    isColliding(mo) {
+        return this.x + this.width > mo.x &&
+               this.x < mo.x + mo.width &&
+               this.y + this.height > mo.y &&
+               this.y < mo.y + mo.height;
+    }    
 
     hit() {
         this.energy -= 5;
@@ -49,15 +67,6 @@ class MovableObject extends DrawableObject {
         return this.energy == 0;
     }
     
-    /*
-    isColliding (obj) {
-        return  (this.X + this.width) >= obj.X && this.X <= (obj.X + obj.width) && 
-                (this.Y + this.offsetY + this.height) >= obj.Y &&
-                (this.Y + this.offsetY) <= (obj.Y + obj.height) && 
-                obj.onCollisionCourse;
-    }
-    */
- 
     playAnimation(images) {
         let i = this.currentImage % images.length;
         let path = images[i];

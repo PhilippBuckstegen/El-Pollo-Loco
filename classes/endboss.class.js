@@ -154,4 +154,7 @@ class Endboss extends MovableObject {
     moveRight() {
         this.x += this.speed;
     }
+    
 }
+
+

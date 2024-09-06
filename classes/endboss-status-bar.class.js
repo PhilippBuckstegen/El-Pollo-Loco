@@ -4,7 +4,7 @@ class EndbossStatusBar extends StatusBar {
             500,
             5,
             200,
-            60,
+            50,
             [
                 'img/7_statusbars/2_statusbar_endboss/blue/blue0.png',
                 'img/7_statusbars/2_statusbar_endboss/blue/blue20.png',
