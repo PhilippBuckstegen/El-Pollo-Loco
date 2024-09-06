@@ -34,6 +34,7 @@ class World {
 
     run() {
         setInterval(() => {
+            this.jumpOnEnemy();
             this.checkCollisions();
             this.checkThrowObjects();
         }, 200);
@@ -46,10 +47,31 @@ class World {
         }
     }
 
+    jumpOnEnemy() {
+        this.level.enemies.forEach((enemy) => {
+            if (this.character.isColliding(enemy)) {
+                if (this.character.isAboveGround()) {
+                    enemy.defeat();
+
+                    if (enemy instanceof BabyChicken) {
+                        //this.soundManager.playSound('babyChickenDead');
+                    } else if (enemy instanceof Chicken) {
+                        //this.soundManager.playSound('chickenDead');
+                    }
+
+                    this.character.jump();
+                } else {
+                    this.character.hit();
+                    this.healthStatusBar.setPercentage(this.character.energy);
+                }
+            }
+        });
+    }
+
     checkCollisions() {
         // Kollisionserkennung für Level-Feinde
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
+            if (this.character.isColliding(enemy) && !enemy.isDead) {
                 this.character.hit();
                 this.healthStatusBar.setPercentage(this.character.energy);
             }
@@ -68,6 +90,7 @@ class World {
             }
         });
     }
+    
 
     addCollectables() {
         let numberOfBottles = 10;

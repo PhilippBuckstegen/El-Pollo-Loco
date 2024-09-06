@@ -2,6 +2,8 @@ class Chicken extends MovableObject {
     width = 100;
     height = 85;
     y = 345;
+    isDead = false;
+
     IMAGES_WALKING = [
         'img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
         'img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
@@ -32,5 +34,13 @@ class Chicken extends MovableObject {
                 this.playAnimation(this.IMAGES_WALKING);
             }
         }, 200);
+    }
+
+    defeat() {
+        this.isDead = true;
+        this.loadImage(this.IMAGES_DEAD[0]);
+        setTimeout(() => {
+            this.x = -1000;
+        }, 500);
     }
 }

@@ -107,4 +107,7 @@ class Character extends MovableObject {
         this.collectedCoins.push(coin);
         this.world.coinStatusBar.setPercentage(this.collectedCoins.length * 20);
     }
+
 }
+
+
