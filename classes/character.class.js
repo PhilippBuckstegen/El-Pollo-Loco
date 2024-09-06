@@ -61,7 +61,7 @@ class Character extends MovableObject {
     animate() {
         setInterval(() => {
             this.walking_sounds.pause();
-            if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+            if (this.world.keyboard.RIGHT && this.x < this.world.canvasWidth - this.width) {
                 this.moveRight();
                 this.otherDirection = false;
                 this.walking_sounds.play();  

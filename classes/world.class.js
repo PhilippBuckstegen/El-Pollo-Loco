@@ -14,7 +14,7 @@ class World {
     collectables = [];
     canvasWidth = 2200;
     canvasHeight = 480;
-    
+
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
@@ -47,6 +47,7 @@ class World {
     }
 
     checkCollisions() {
+        // Kollisionserkennung für Level-Feinde
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
@@ -54,6 +55,7 @@ class World {
             }
         });
 
+        // Kollisionserkennung für collectables
         this.collectables.forEach((collectable, index) => {
             if (this.character.isColliding(collectable)) {
                 if (collectable instanceof CollectableBottle) {
@@ -68,8 +70,8 @@ class World {
     }
 
     addCollectables() {
-        let numberOfBottles = 10; 
-        let numberOfCoins = 10; 
+        let numberOfBottles = 10;
+        let numberOfCoins = 10;
 
         Array.from({ length: numberOfBottles }).forEach(() => {
             let bottle = new CollectableBottle(this.canvas.width, this.canvas.height);
@@ -81,6 +83,7 @@ class World {
             this.collectables.push(coin);
         });
     }
+
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
