@@ -12,8 +12,8 @@ const level1 = new Level(
         new BabyChicken(),
         new BabyChicken(),
         new BabyChicken(),
-        
-        new Endboss(),
+
+        new Endboss()
     ],
     [
         new Cloud(), 

@@ -23,11 +23,12 @@ class DrawableObject {
 
     draw(ctx) {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        this.drawFrame(ctx);
     }
     
     
     drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken) {
+        if (this instanceof Character || this instanceof Chicken || this instanceof Endboss) {
             ctx.beginPath();
             ctx.lineWidth = '5';
             ctx.strokeStyle = 'blue';
@@ -35,5 +36,7 @@ class DrawableObject {
             ctx.stroke();
         }
     }
+
+    
     
 }

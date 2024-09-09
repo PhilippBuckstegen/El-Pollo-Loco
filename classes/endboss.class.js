@@ -10,6 +10,7 @@ class Endboss extends MovableObject {
     isWalking = false;
     isAngry = false;
     isAttacking = false;
+    isDead = false;
     otherDirection = false;
 
     IMAGES_ANGRY = [

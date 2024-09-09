@@ -40,8 +40,8 @@ class World {
         this.soundManager.loadSound('bottleBreak', 'audio/bottle_break.mp3');
         this.soundManager.loadSound('throw', 'audio/throw.mp3');
 
-        this.soundManager.playSound('snoring', true); // true für Loop
-        this.soundManager.playSound('backgroundMusic', true); // true für Loop
+        this.soundManager.playSound('snoring', true);
+        this.soundManager.playSound('backgroundMusic', true);
         this.soundManager.setVolume('backgroundMusic', 0.3);
     }
 
@@ -54,8 +54,11 @@ class World {
         setInterval(() => {
             this.jumpOnEnemy();
             this.checkCollisions();
+        }, 60);
+    
+        setInterval(() => {
             this.checkThrowObjects();
-        }, 300);
+        }, 150);
     }
 
     checkThrowObjects() {
@@ -70,34 +73,35 @@ class World {
 
     jumpOnEnemy() {
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
+            // Überprüfen, ob der Gegner bereits besiegt wurde oder der Charakter kürzlich getroffen wurde
+            if (this.character.isColliding(enemy) && !enemy.isDead && !this.character.isHurt()) {
                 if (this.character.isAboveGround()) {
-                    enemy.defeat();
-
+                    enemy.defeat();  // Gegner wird besiegt
+    
                     if (enemy instanceof BabyChicken) {
                         this.soundManager.playSound('babyChickenDead');
                     } else if (enemy instanceof Chicken) {
                         this.soundManager.playSound('chickenDead');
                     }
-
-                    this.character.jump();
+    
+                    this.character.jump();  // Charakter springt nur einmal
                 } else {
-                    this.character.hit();
+                    this.character.hit();  // Charakter wird nur einmal getroffen
                     this.healthStatusBar.setPercentage(this.character.energy);
                 }
             }
         });
     }
+    
 
     checkCollisions() {
-
         this.level.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy) && !enemy.isDead) {
+            if (this.character.isColliding(enemy) && !enemy.isDead && !this.character.isHurt()) {
                 this.character.hit();
                 this.healthStatusBar.setPercentage(this.character.energy);
             }
         });
-
+    
         this.collectables.forEach((collectable, index) => {
             if (this.character.isColliding(collectable)) {
                 if (collectable instanceof CollectableBottle) {
@@ -128,7 +132,6 @@ class World {
             this.collectables.push(coin);
         });
     }
-
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

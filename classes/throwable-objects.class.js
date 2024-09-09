@@ -24,8 +24,8 @@ class ThrowableObject extends MovableObject {
         this.y = y;
         this.height = 60;
         this.width = 60;
-        this.speedX = 18;
-        this.speedY = 22;
+        this.speedX = 25;
+        this.speedY = 25;
         this.currentImage = 0;
         this.currentSplashImage = 0;
         this.isCollided = false;
@@ -66,8 +66,9 @@ class ThrowableObject extends MovableObject {
                     this.playSplashAnimation();
                 }
             }
-        }, 1000 / 25);
+        }, 1000 / 20);
     }
+
 
     playAnimation(images) {
         if (this.isSplash) return;
@@ -99,7 +100,7 @@ class ThrowableObject extends MovableObject {
         }
     }
 
-    remove() {
+    remove() { // könnte problematisch sein wegen Enboss
         let index = this.world.throwableObjects.indexOf(this);
         if (index > -1) {
             this.world.throwableObjects.splice(index, 1);
