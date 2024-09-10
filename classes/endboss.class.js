@@ -67,74 +67,74 @@ class Endboss extends MovableObject {
     }
 
     animate() {
-        setInterval(() => {
-            if (this.isWalking) {
-                this.walkingMovement();
-            }
-
-            this.applyGravity();
-
-            if (this.y < 45) {
-                this.horizontalJumpMovement();
-            }
-        }, 1000 / 60);
-
-        setInterval(() => {
-            this.playRandomAnimation();
-        }, 1000);
+        this.startMovementLogic();  // Bewegung und Schwerkraft anwenden
+        this.startAnimationCycle(); // Animationen durchlaufen
     }
 
-    walkingMovement() {
-        if (this.direction === 'left') {
-            this.moveLeft();
-            this.otherDirection = false;
-        } else {
-            this.moveRight();
-            this.otherDirection = true;
-        }
+    startMovementLogic() {
+        setInterval(() => {
+            if (this.isWalking) {
+                this.walkingMovement();  // Bewegung logik
+            }
 
-        if (this.x <= 2000) this.direction = 'right';
-        if (this.x >= 2650) this.direction = 'left';
+            this.applyGravity();  // Schwerkraft anwenden
+
+            if (this.y < 45) {  // Springbewegung, wenn in der Luft
+                this.horizontalJumpMovement();
+            }
+        }, 1000 / 60);  // 60 FPS für die Bewegungslogik
+    }
+
+    startAnimationCycle() {
+        setInterval(() => {
+            this.playRandomAnimation();  // Animation zufällig auswählen
+        }, 1000);  // Alle 1000ms eine neue Animation auswählen
     }
 
     playRandomAnimation() {
         const animations = [
-            { images: this.IMAGES_WALKING, state: 'walking' },
-            { images: this.IMAGES_ATTACK, state: 'attacking' },
-            { images: this.IMAGES_ANGRY, state: 'angry' }
+            { images: this.IMAGES_WALKING, state: 'walking', speedFactor: 0.1 },  // Geh-Animation schneller abspielen
+            { images: this.IMAGES_ATTACK, state: 'attacking', speedFactor: 2 },   // Normales Tempo für Angriff
+            { images: this.IMAGES_ANGRY, state: 'angry', speedFactor: 3 }         // Normales Tempo für Wut
         ];
+
         const randomIndex = Math.floor(Math.random() * animations.length);
         const selectedAnimation = animations[randomIndex];
 
-        this.playAnimation(selectedAnimation.images);
+        this.playAnimation(selectedAnimation.images, selectedAnimation.speedFactor);
 
+        // Zustand der Animation setzen
         this.isWalking = selectedAnimation.state === 'walking';
         this.isAngry = selectedAnimation.state === 'angry';
         this.isAttacking = selectedAnimation.state === 'attacking';
 
         if (this.isAttacking) {
-            this.jump();
+            this.jump();  // Springt bei Angriff
         }
     }
 
-    horizontalJumpMovement() {
-        if (this.otherDirection) {
-            this.moveRight();
-        } else {
-            this.moveLeft();
-        }
-    }
-
-    playAnimation(images) {
-        let i = Math.floor(this.currentImage / 2) % images.length; 
-        let path = images[i];
-        this.img = this.imageCache[path];
+    playAnimation(images, speedFactor = 4) {
+        let i = Math.floor(this.currentImage / speedFactor) % images.length; 
+        this.img = this.imageCache[images[i]];
         this.currentImage++;
     }
 
+    walkingMovement() {
+        this.otherDirection = this.direction === 'right';
+        this.direction === 'left' ? this.moveLeft() : this.moveRight();
+
+        // Bewegungsgrenzen für den Endboss
+        if (this.x <= 2000) this.direction = 'right';
+        if (this.x >= 2650) this.direction = 'left';
+    }
+
+    horizontalJumpMovement() {
+        this.otherDirection ? this.moveRight() : this.moveLeft();
+    }
+
     jump() {
-        if (this.y === 45) { 
-            this.speedY = -this.jumpPower; 
+        if (this.y === 45) {
+            this.speedY = -this.jumpPower;  // Endboss springt
         }
     }
 
@@ -142,9 +142,9 @@ class Endboss extends MovableObject {
         this.y += this.speedY;
         if (this.y > 45) {
             this.y = 45;
-            this.speedY = 0;
+            this.speedY = 0;  // Verhindert das Durchfallen des Endbosses
         } else {
-            this.speedY += this.gravity;
+            this.speedY += this.gravity;  // Beschleunigung durch Schwerkraft
         }
     }
 

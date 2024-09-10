@@ -19,6 +19,7 @@ canvas {
   transform: translate(-50%, -50%);
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4);
   border-radius: 8px;
+  z-index: 1;
 }
 
 .overlay {
@@ -29,4 +30,27 @@ canvas {
   height: 100%;
   background: rgba(0, 0, 0, 0.4);
   z-index: -1;
+}
+
+.img-start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  z-index: 2;
+  width: 720px;
+  height: 480px;
+  display: none;
+}
+
+.img-end {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  z-index: 2;
+  width: 720px;
+  height: 480px;
 }

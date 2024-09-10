@@ -60,19 +60,16 @@ class Character extends MovableObject {
     
     animate() {
         setInterval(() => {
-            this.walking_sounds.pause();
             if (this.world.keyboard.RIGHT && this.x < this.world.canvasWidth - this.width) {
                 this.world.soundManager.stopSound('snoring');
                 this.moveRight();
                 this.otherDirection = false;
-                this.walking_sounds.play();  
             }
 
             if (this.world.keyboard.LEFT && this.x > 0) {
                 this.world.soundManager.stopSound('snoring');
                 this.moveLeft();
                 this.otherDirection = true;
-                this.walking_sounds.play();
             }
 
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
@@ -86,16 +83,19 @@ class Character extends MovableObject {
         }, 1000 / 60);
 
         setInterval(() => {
+            this.walking_sounds.pause();
+
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
-                this.walking_sounds.pause();
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.IMAGES_WALKING);
+                    this.walking_sounds.play();
+
                 }
             }
         }, 50);
