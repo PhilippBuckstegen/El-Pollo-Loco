@@ -14,6 +14,7 @@ class World {
     collectables = [];
     canvasWidth = 2200;
     canvasHeight = 480;
+    intervals = [];
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -57,15 +58,15 @@ class World {
     }
 
     run() {
-        setInterval(() => {
+        this.intervals.push(setInterval(() => {
             this.jumpOnEnemy();
             this.checkCollisions();
             this.checkBottleCollisions();
-        }, 40);
+        }, 40));
     
-        setInterval(() => {
+        this.intervals.push(setInterval(() => {
             this.checkThrowObjects();
-        }, 150);
+        }, 150));
     }
 
     checkThrowObjects() {
@@ -159,7 +160,7 @@ class World {
     
         setTimeout(() => {
             this.removeEndboss(enemy);
-            // this.endGame();  // Beende das Spiel optional nach dem Entfernen des Endbosses
+            this.stopGame();
         }, 500); 
     }    
     
@@ -246,17 +247,12 @@ class World {
         }
     }
     
-
-    /*
-    endGame() {
-        // Hier kannst du definieren, was passieren soll, wenn das Spiel endet.
-        // Zum Beispiel: Ein Game Over Bildschirm anzeigen, Spiel stoppen, etc.
-    
-        // Beispiel: Das Spiel anhalten
-        this.soundManager.stopAllSounds();  // Stoppe alle Sounds
-        alert('Game Over! You defeated the Endboss!');  // Zeigt eine Nachricht an
-        // Alternativ könntest du hier einen "Game Over"-Bildschirm oder eine Endszene anzeigen
-    }
-    */
+    stopGame() {
+        this.intervals.forEach(clearInterval);
+        this.intervals = []; 
+        this.soundManager.stopAllSounds();
+        window.removeEventListener("keydown", keydownHandler);
+        window.removeEventListener("keyup", keyupHandler);
+    }    
     
 }

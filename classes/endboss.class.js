@@ -156,13 +156,14 @@ class Endboss extends MovableObject {
     }
     
     hit() {
-        this.energy -= 10;
+        this.energy -= 2;
         if (this.energy < 0) {
             this.energy = 0;
             this.isDead = true;
         }
         this.lastHit = new Date().getTime();
     }
+    
 
     isHurt() {
         let timePassed = new Date().getTime() - this.lastHit;

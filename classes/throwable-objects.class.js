@@ -104,7 +104,7 @@ class ThrowableObject extends MovableObject {
         setTimeout(() => {
             let index = this.world.throwableObjects.indexOf(this);
             if (index > -1) {
-                this.world.throwableObjects.splice(index, 1); // Flasche aus dem Array entfernen
+                this.world.throwableObjects.splice(index, 1);
             }
         }, 200); 
     }
