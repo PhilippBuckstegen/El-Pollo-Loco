@@ -44,7 +44,6 @@ class Character extends MovableObject {
     ];
 
     world;
-    walking_sounds = new Audio('audio/running.mp3');
     jumping_sounds = new Audio('audio/jump_voice.mp3');
 
     constructor(world) {
@@ -71,9 +70,9 @@ class Character extends MovableObject {
             }
 
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-                this.world.soundManager.stopSound('snoring');
                 this.jump();
-                this.jumping_sounds.play();
+                this.world.soundManager.playSound('characterJump');
+
             }
 
             this.world.camera_x = -this.x + 80;
@@ -81,21 +80,22 @@ class Character extends MovableObject {
         }, 1000 / 60);
 
         setInterval(() => {
-            this.walking_sounds.pause();
-
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
+                this.world.soundManager.playSound('characterDead');
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
                 this.world.soundManager.playSound('characterHurt');
-
             } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
+
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                    this.playAnimation(this.IMAGES_WALKING);
                     this.world.soundManager.stopSound('snoring');
-                    this.walking_sounds.play();
+                    this.world.soundManager.playSound('characterRun');
+                    this.playAnimation(this.IMAGES_WALKING);
+                } else {
+                    this.world.soundManager.stopSound('characterRun');
 
                 }
             }

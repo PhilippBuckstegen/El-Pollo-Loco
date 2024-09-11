@@ -42,6 +42,9 @@ class World {
         this.soundManager.loadSound('endbossDead', 'audio/endboss_dead.mp3');
         this.soundManager.loadSound('endbossHurt', 'audio/endboss_hurt.mp3');
         this.soundManager.loadSound('characterHurt', 'audio/hurt.mp3');
+        this.soundManager.loadSound('characterRun', 'audio/running.mp3');
+        this.soundManager.loadSound('characterJump', 'audio/jump_voice.mp3');
+        this.soundManager.loadSound('characterDead', 'audio/dead.mp3');
 
         this.soundManager.playSound('snoring', true);
         this.soundManager.playSound('backgroundMusic', true);
@@ -100,7 +103,6 @@ class World {
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy) && !enemy.isDead && !this.character.isHurt()) {
-                this.soundManager.playSound('characterHurt');
                 this.character.hit();
                 this.healthStatusBar.setPercentage(this.character.energy);
             }
