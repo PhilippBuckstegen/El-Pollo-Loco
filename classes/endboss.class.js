@@ -12,6 +12,7 @@ class Endboss extends MovableObject {
     isAttacking = false;
     isDead = false;
     otherDirection = false;
+    energy = 100;
 
     IMAGES_ANGRY = [
         'img/4_enemie_boss_chicken/2_alert/G5.png',
@@ -67,28 +68,28 @@ class Endboss extends MovableObject {
     }
 
     animate() {
-        this.startMovementLogic();  // Bewegung und Schwerkraft anwenden
-        this.startAnimationCycle(); // Animationen durchlaufen
+        this.startMovementLogic();
+        this.startAnimationCycle();
     }
 
     startMovementLogic() {
         setInterval(() => {
             if (this.isWalking) {
-                this.walkingMovement();  // Bewegung logik
+                this.walkingMovement();
             }
 
-            this.applyGravity();  // Schwerkraft anwenden
+            this.applyGravity();
 
-            if (this.y < 45) {  // Springbewegung, wenn in der Luft
+            if (this.y < 45) {
                 this.horizontalJumpMovement();
             }
-        }, 1000 / 60);  // 60 FPS für die Bewegungslogik
+        }, 1000 / 60);  // Bewegungslogik
     }
 
     startAnimationCycle() {
         setInterval(() => {
-            this.playRandomAnimation();  // Animation zufällig auswählen
-        }, 1000);  // Alle 1000ms eine neue Animation auswählen
+            this.playRandomAnimation();
+        }, 1000);
     }
 
     playRandomAnimation() {
@@ -103,13 +104,12 @@ class Endboss extends MovableObject {
 
         this.playAnimation(selectedAnimation.images, selectedAnimation.speedFactor);
 
-        // Zustand der Animation setzen
         this.isWalking = selectedAnimation.state === 'walking';
         this.isAngry = selectedAnimation.state === 'angry';
         this.isAttacking = selectedAnimation.state === 'attacking';
 
         if (this.isAttacking) {
-            this.jump();  // Springt bei Angriff
+            this.jump();
         }
     }
 
@@ -123,7 +123,6 @@ class Endboss extends MovableObject {
         this.otherDirection = this.direction === 'right';
         this.direction === 'left' ? this.moveLeft() : this.moveRight();
 
-        // Bewegungsgrenzen für den Endboss
         if (this.x <= 2000) this.direction = 'right';
         if (this.x >= 2650) this.direction = 'left';
     }
@@ -134,7 +133,7 @@ class Endboss extends MovableObject {
 
     jump() {
         if (this.y === 45) {
-            this.speedY = -this.jumpPower;  // Endboss springt
+            this.speedY = -this.jumpPower;
         }
     }
 
@@ -142,9 +141,9 @@ class Endboss extends MovableObject {
         this.y += this.speedY;
         if (this.y > 45) {
             this.y = 45;
-            this.speedY = 0;  // Verhindert das Durchfallen des Endbosses
+            this.speedY = 0;
         } else {
-            this.speedY += this.gravity;  // Beschleunigung durch Schwerkraft
+            this.speedY += this.gravity;
         }
     }
 
@@ -156,6 +155,24 @@ class Endboss extends MovableObject {
         this.x += this.speed;
     }
     
+    hit() {
+        this.energy -= 10;
+        if (this.energy < 0) {
+            this.energy = 0;
+            this.isDead = true;
+        }
+        this.lastHit = new Date().getTime();
+    }
+
+    isHurt() {
+        let timePassed = new Date().getTime() - this.lastHit;
+        return timePassed < 1000;
+    }
+
+    isDead() {
+        return super.isDead();
+    }
+
 }
 
 

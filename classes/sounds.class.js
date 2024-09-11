@@ -3,6 +3,7 @@ class SoundManager {
         this.sounds = {};
         window.addEventListener('click', () => {
             this.playSound('backgroundMusic', true);
+            this.playSound('snoring', true);
         });
     }
 

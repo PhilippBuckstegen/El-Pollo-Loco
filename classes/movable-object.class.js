@@ -5,6 +5,7 @@ class MovableObject extends DrawableObject {
     acceleration = 2.5;
     energy = 100;
     lastHit = 0;
+    animationFinished = false;
 
     applyGravity() {
         setInterval(() => {
@@ -46,7 +47,7 @@ class MovableObject extends DrawableObject {
     }
 
     isDead() {
-        return this.energy == 0;
+        return this.energy === 0;
     }
     
     playAnimation(images) {
@@ -68,4 +69,23 @@ class MovableObject extends DrawableObject {
         this.speedY = 30;
         this.y = 135;
     }
+
+    playAnimationOnce(images) {
+        let currentFrame = 0;
+        let totalFrames = images.length;
+
+
+        let showNextFrame = () => {
+            if (currentFrame < totalFrames) {
+                this.img = this.imageCache[images[currentFrame]];
+                currentFrame++;
+                setTimeout(showNextFrame, 100);
+            } else {
+                this.img = this.imageCache['img/4_enemie_boss_chicken/5_dead/G26.png'];
+            }
+        };
+
+        showNextFrame();
+    }
+      
 }

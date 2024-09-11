@@ -61,13 +61,11 @@ class Character extends MovableObject {
     animate() {
         setInterval(() => {
             if (this.world.keyboard.RIGHT && this.x < this.world.canvasWidth - this.width) {
-                this.world.soundManager.stopSound('snoring');
                 this.moveRight();
                 this.otherDirection = false;
             }
 
             if (this.world.keyboard.LEFT && this.x > 0) {
-                this.world.soundManager.stopSound('snoring');
                 this.moveLeft();
                 this.otherDirection = true;
             }
@@ -89,11 +87,14 @@ class Character extends MovableObject {
                 this.playAnimation(this.IMAGES_DEAD);
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
+                this.world.soundManager.playSound('characterHurt');
+
             } else if (this.isAboveGround()) {
                 this.playAnimation(this.IMAGES_JUMPING);
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.IMAGES_WALKING);
+                    this.world.soundManager.stopSound('snoring');
                     this.walking_sounds.play();
 
                 }

@@ -100,10 +100,12 @@ class ThrowableObject extends MovableObject {
         }
     }
 
-    remove() { // könnte problematisch sein wegen Enboss
-        let index = this.world.throwableObjects.indexOf(this);
-        if (index > -1) {
-            this.world.throwableObjects.splice(index, 1);
-        }
+    remove() {
+        setTimeout(() => {
+            let index = this.world.throwableObjects.indexOf(this);
+            if (index > -1) {
+                this.world.throwableObjects.splice(index, 1); // Flasche aus dem Array entfernen
+            }
+        }, 200); 
     }
 }

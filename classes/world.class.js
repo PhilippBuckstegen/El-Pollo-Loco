@@ -39,6 +39,9 @@ class World {
         this.soundManager.loadSound('snoring', 'audio/sleep.mp3');
         this.soundManager.loadSound('bottleBreak', 'audio/bottle_break.mp3');
         this.soundManager.loadSound('throw', 'audio/throw.mp3');
+        this.soundManager.loadSound('endbossDead', 'audio/endboss_dead.mp3');
+        this.soundManager.loadSound('endbossHurt', 'audio/endboss_hurt.mp3');
+        this.soundManager.loadSound('characterHurt', 'audio/hurt.mp3');
 
         this.soundManager.playSound('snoring', true);
         this.soundManager.playSound('backgroundMusic', true);
@@ -54,7 +57,8 @@ class World {
         setInterval(() => {
             this.jumpOnEnemy();
             this.checkCollisions();
-        }, 60);
+            this.checkBottleCollisions();
+        }, 40);
     
         setInterval(() => {
             this.checkThrowObjects();
@@ -73,10 +77,9 @@ class World {
 
     jumpOnEnemy() {
         this.level.enemies.forEach((enemy) => {
-            // Überprüfen, ob der Gegner bereits besiegt wurde oder der Charakter kürzlich getroffen wurde
             if (this.character.isColliding(enemy) && !enemy.isDead && !this.character.isHurt()) {
                 if (this.character.isAboveGround()) {
-                    enemy.defeat();  // Gegner wird besiegt
+                    enemy.defeat();
     
                     if (enemy instanceof BabyChicken) {
                         this.soundManager.playSound('babyChickenDead');
@@ -84,9 +87,9 @@ class World {
                         this.soundManager.playSound('chickenDead');
                     }
     
-                    this.character.jump();  // Charakter springt nur einmal
+                    this.character.jump();
                 } else {
-                    this.character.hit();  // Charakter wird nur einmal getroffen
+                    this.character.hit();
                     this.healthStatusBar.setPercentage(this.character.energy);
                 }
             }
@@ -97,6 +100,7 @@ class World {
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy) && !enemy.isDead && !this.character.isHurt()) {
+                this.soundManager.playSound('characterHurt');
                 this.character.hit();
                 this.healthStatusBar.setPercentage(this.character.energy);
             }
@@ -115,8 +119,48 @@ class World {
                 }
             }
         });
+    }
+    
+    checkBottleCollisions() {
+        this.throwableObjects.forEach((bottle) => {
+            this.level.enemies.forEach((enemy) => {
+                if (bottle.isColliding(enemy)) {
+                    bottle.playSplashAnimation();
+                    bottle.remove();
+                    enemy.hit();
+    
+                    if (enemy instanceof Endboss) {
+                        this.updateEndbossStatus(enemy);
+    
+                        if (enemy.isDead) {
+                            this.endGameAfterEndbossDeath(enemy);
+                        }
+                    }
+                }
+            });
+        });
+    }
+    
+    updateEndbossStatus(endboss) {
+        if (!endboss.isDead) {
+            endboss.playAnimation(endboss.IMAGES_HURT);
+            this.soundManager.playSound('endbossHurt');
 
+            this.endbossStatusBar.setPercentage(endboss.energy);   
+        }
+    }
+    
+    endGameAfterEndbossDeath(enemy) {
+        enemy.playAnimationOnce(enemy.IMAGES_DEAD);
+        this.soundManager.playSound('endbossDead');
+
+    
+        setTimeout(() => {
+            this.removeEndboss(enemy);
+            // this.endGame();  // Beende das Spiel optional nach dem Entfernen des Endbosses
+        }, 500); 
     }    
+    
 
     addCollectables() {
         let numberOfBottles = 10;
@@ -191,4 +235,26 @@ class World {
         mo.x = mo.x * -1;
         this.ctx.restore();
     }
+
+    
+    removeEndboss(endboss) {
+        let index = this.level.enemies.indexOf(endboss);
+        if (index > -1) {
+            this.level.enemies.splice(index, 1);
+        }
+    }
+    
+
+    /*
+    endGame() {
+        // Hier kannst du definieren, was passieren soll, wenn das Spiel endet.
+        // Zum Beispiel: Ein Game Over Bildschirm anzeigen, Spiel stoppen, etc.
+    
+        // Beispiel: Das Spiel anhalten
+        this.soundManager.stopAllSounds();  // Stoppe alle Sounds
+        alert('Game Over! You defeated the Endboss!');  // Zeigt eine Nachricht an
+        // Alternativ könntest du hier einen "Game Over"-Bildschirm oder eine Endszene anzeigen
+    }
+    */
+    
 }
