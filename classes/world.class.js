@@ -156,7 +156,7 @@ class World {
     }
     
     endGameAfterEndbossDeath(enemy) {
-        enemy.playAnimationOnce(enemy.IMAGES_DEAD, 500);
+        enemy.playAnimationOnce(enemy.IMAGES_DEAD, 200);
         this.soundManager.playSound('endbossDead');
 
     
