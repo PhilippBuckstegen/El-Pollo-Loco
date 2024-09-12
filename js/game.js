@@ -57,16 +57,31 @@ function addEventListenerInit() {
     window.addEventListener("keyup", keyupHandler);
 }
 
-function stopGame() {
+function stopGame(result) {
     if (world) {
-        world.stopGame();
+        playEndScreenAnimation(result)
+        world.stopGameMechanics();
     }
+}
 
-    /*
-    const endScreen = document.getElementById('game-over');
-    if (endScreen) {
-        endScreen.style.display = 'block';
+function playEndScreenAnimation(result) {
+    if (result === 'win') {
+        showWinScreen();
+        world.soundManager.playSound('win');
+    } else if (result === 'lose') {
+        showLoseScreen();
+        world.soundManager.playSound('lose');
     }
-    */
+}
+
+function showWinScreen() {
+    let winScreen = document.getElementById('winScreen');
+    winScreen.classList.remove('d-none');
+}
+
+function showLoseScreen() {
+    let loseScreen = document.getElementById('loseScreen');
+    loseScreen.classList.remove('d-none');
+
 }
 

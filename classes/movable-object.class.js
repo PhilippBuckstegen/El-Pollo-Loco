@@ -70,7 +70,7 @@ class MovableObject extends DrawableObject {
         this.y = 135;
     }
 
-    playAnimationOnce(images) {
+    playAnimationOnce(images, delay = 100) {
         let currentFrame = 0;
         let totalFrames = images.length;
 
@@ -79,9 +79,9 @@ class MovableObject extends DrawableObject {
             if (currentFrame < totalFrames) {
                 this.img = this.imageCache[images[currentFrame]];
                 currentFrame++;
-                setTimeout(showNextFrame, 100);
+                setTimeout(showNextFrame, delay);
             } else {
-                this.img = this.imageCache['img/4_enemie_boss_chicken/5_dead/G26.png'];
+                this.img = this.imageCache[images[totalFrames - 1]];
             }
         };
 

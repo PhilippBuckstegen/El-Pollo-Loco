@@ -46,6 +46,8 @@ class World {
         this.soundManager.loadSound('characterRun', 'audio/running.mp3');
         this.soundManager.loadSound('characterJump', 'audio/jump_voice.mp3');
         this.soundManager.loadSound('characterDead', 'audio/dead.mp3');
+        this.soundManager.loadSound('win', 'audio/music/won.mp3');
+        this.soundManager.loadSound('lose', 'audio/music/lost.mp3');
 
         this.soundManager.playSound('snoring', true);
         this.soundManager.playSound('backgroundMusic', true);
@@ -154,13 +156,13 @@ class World {
     }
     
     endGameAfterEndbossDeath(enemy) {
-        enemy.playAnimationOnce(enemy.IMAGES_DEAD);
+        enemy.playAnimationOnce(enemy.IMAGES_DEAD, 500);
         this.soundManager.playSound('endbossDead');
 
     
         setTimeout(() => {
             this.removeEndboss(enemy);
-            this.stopGame();
+            stopGame('win');
         }, 500); 
     }    
     
@@ -247,10 +249,10 @@ class World {
         }
     }
     
-    stopGame() {
+    stopGameMechanics() {
         this.intervals.forEach(clearInterval);
         this.intervals = []; 
-        this.soundManager.stopAllSounds();
+        this.soundManager.stopSound('backgroundMusic', true);
         window.removeEventListener("keydown", keydownHandler);
         window.removeEventListener("keyup", keyupHandler);
     }    

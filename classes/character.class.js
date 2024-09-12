@@ -1,10 +1,12 @@
 class Character extends MovableObject {
+    world;
     width = 120;
     height = 300;
     speed = 10;
     y = 135;
     collectedBottles = [];
     collectedCoins = [];
+    isDeadAnimating = false;
 
     IMAGES_WALKING = [
         'img/2_character_pepe/2_walk/W-21.png',
@@ -43,9 +45,6 @@ class Character extends MovableObject {
         'img/2_character_pepe/4_hurt/H-43.png',
     ];
 
-    world;
-    jumping_sounds = new Audio('audio/jump_voice.mp3');
-
     constructor(world) {
         super().loadImage('img/2_character_pepe/1_idle/long_idle/I-13.png');
         this.world = world;
@@ -55,6 +54,15 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_HURT);
         this.applyGravity();
         this.animate();
+    }
+
+    characterIsDead() {
+        if (this.isDead() && !this.isDeadAnimating) {
+            this.isDeadAnimating = true;
+            this.playAnimationOnce(this.IMAGES_DEAD, 300);
+            this.world.soundManager.playSound('characterDead');
+            setTimeout(() => stopGame('lose'), 1000);
+        }
     }
     
     animate() {
@@ -81,8 +89,8 @@ class Character extends MovableObject {
 
         setInterval(() => {
             if (this.isDead()) {
-                this.playAnimation(this.IMAGES_DEAD);
-                this.world.soundManager.playSound('characterDead');
+                this.characterIsDead();
+                
             } else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
                 this.world.soundManager.playSound('characterHurt');
